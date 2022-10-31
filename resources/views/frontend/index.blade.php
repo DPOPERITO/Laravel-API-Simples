@@ -6,37 +6,82 @@
             <h2>Teste de uso API.</h2>
             <hr>
             <h4>Cadastro.</h4>
-            <form class="row row-cols-lg-auto g-3 align-items-center">
-                <div class="row mb-3">
-                    <label for="colFormLabel" class="col-sm-4 col-form-label">Nome</label>
-                    <div class="col-sm-12">
+            <form class="form-inline">
+                <div class="row">
+                    <div class="col-md-6">
+                        <label><b>Nome</b></label>
                         <input type="text" class="form-control" id="nome" placeholder="Nome">
                     </div>
-                </div>
-                <div class="row mb-3">
-                    <label for="colFormLabel" class="col-sm-4 col-form-label">Descrição</label>
-                    <div class="col-sm-12">
-                        <input type="text" class="form-control" id="descricao" placeholder="Descrição">
+
+                    <div class="col-md-3">
+                        <label><b>Marca</b></label>
+                        <select class="form-control" name="marca" id="marca">
+                            <option value="">Selecione...</option>
+                            @foreach ($marcas as $marca)
+                                <option value="{{ $marca->id }}">{{ $marca->nome }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="col-md-3">
+                        <label><b>Tensão elétrica</b></label>
+                        <select class="form-control" name="tensao" id="tensao">
+                            <option value="">Selecione</option>
+                            <option value="127">127 Volts</option>
+                            <option value="220">220 Volts</option>
+                            <option value="380">380 Volts</option>
+                            <option value="440">440 Volts</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-12">
+                        <label><b>Descrição</b></label>
+                        <textarea class="form-control" id="descricao" placeholder="Descrição"> </textarea>
+                    </div>
+
+                    <div class="col-md-12 mt-4 text-center">
+                        <button class="btn btn-primary" type="button" onclick="createEletro()">Salvar o registro</button>
                     </div>
                 </div>
-                <div class="row mb-3">
-                    <label for="colFormLabel" class="col-sm-12 col-form-label">Tensão elétrica</label>
-                    <div class="col-sm-12">
-                        <input type="text" class="form-control" id="tensao" placeholder="Tensão">
-                    </div>
-                </div>
-                <div class="row mb-3">
-                    <label for="colFormLabel" class="col-sm-12 col-form-label">Marca</label>
-                    <div class="col-sm-12">
-                        <input type="text" class="form-control" id="marca" placeholder="Marca">
-                    </div>
-                </div>
-                <button class="btn btn-primary" type="button" onclick="createEletro()">Salvar</button>
             </form>
         </div>
 
         <div class="row mt-5">
             <h4>Listagem de dados</h4>
+            <hr>
+            <form action="{{ route('search') }}" method="post" class="mb-3">
+                @csrf
+                <div class="row">
+                    <div class="col-md-4">
+                        <label><b>Nome</b></label>
+                        <input class="form-control" type="text" value="{{ old('_nome') }}" name="_nome" placeholder="Nome do produto">
+                    </div>
+                    <div class="col-md-3">
+                        <label><b>Marca</b></label>
+                        <select class="form-control" name="_marca">
+                            <option value="">Selecione...</option>
+                            @foreach ($marcas as $marca)
+                                <option value="{{ $marca->id }}" {{ (old('_marca') === $marca->id) ? 'selected' : '' }} >{{ $marca->nome }}</option>
+                            @endforeach
+                        </select>
+                       
+                    </div>
+                    <div class="col-md-3">
+                        <label><b>Tensão elétrica</b></label>
+                        <select class="form-control" name="_tensao">
+                            <option value="">Selecione</option>
+                            <option value="127" {{ (old('_tensao') === 127) ? 'selected' : '' }}>127 Volts</option>
+                            <option value="220" {{ (old('_tensao') === 220) ? 'selected' : '' }}>220 Volts</option>
+                            <option value="380" {{ (old('_tensao') === 380) ? 'selected' : '' }}>380 Volts</option>
+                            <option value="440" {{ (old('_tensao') === 440) ? 'selected' : '' }}>440 Volts</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2 mt-4">
+                        <button type="submit" class="btn btn-info">Pesquisar</button>
+                    </div>
+                </div>
+            </form>
+        
             <table class="table">
                 <thead class="table-dark">
                     <tr>
@@ -49,7 +94,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($dados as $item)
+                    @foreach ($eletro as $item)
                         <tr>
                             <th>{{ $item->id }}</th>
                             <th>{{ $item->nome }}</th>
@@ -65,9 +110,9 @@
                     @endforeach
                 </tbody>
             </table>
-            <div class="d-flex">
+            {{-- <div class="d-flex">
                 {{ $dados->links('pagination::bootstrap-4') }}
-            </div>
+            </div> --}}
         </div>
     </div>
     <script type="application/javascript">
@@ -76,7 +121,7 @@
         if(confirm("Você confirma e exclusão do registro "+vId+"?")) 
         {
             $.ajax({
-            url: '{{ route('eletro.delete') }}',
+            url: 'http://localhost/apiLaravel/public/api/eletro/delete',
             type: "POST",
             data: {
                 id: vId
@@ -94,7 +139,7 @@
         var vTensao = $("#tensao").val();
         var vMarca = $("#marca").val();
         $.ajax({
-            url: '{{ route('eletro.create') }}',
+            url: 'http://localhost/apiLaravel/public/api/eletro/create',
             type: "POST",
             data: {
                 nome: vNome,
@@ -105,7 +150,7 @@
             cache: false,
             success: function(data) {
                 toastrss(data);
-            }
+            },
         });
     }
         function toastrss(data) {

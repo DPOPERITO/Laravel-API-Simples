@@ -1,4 +1,6 @@
 ## ==== Documentação de para uso da API ===== ##
+OBS: para testar o uso da API, deve-se criar uma cópia do projeto, e dicionar ela em um local de sua preferência em seu dispositivo, onde esteja rodando o Wampp, Xampp ou qualquer outro servidor PHP com Mysql ou MariaDB. Em seguida configure esse projeto em seu banco de dados, com base na descrição abaixo.
+VOCÊ PODE FAZER A MESMA CONFIGURAÇÃO DE BANCO DE DADOS NO PROJETO USADO COMO FRONTEND PARA SEUS TESTES.
 
 ------ Configuração no arquivo .env ------------
 -> Criar uma base de dados com Mysql ou MariaDB;

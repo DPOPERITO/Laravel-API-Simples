@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\eletrodomestico;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class EletroApiController extends Controller
 {
@@ -50,15 +51,27 @@ class EletroApiController extends Controller
         
     }
 
-    public function show($id)
-    {
-        if(!$data = $this->eletro->find($id)) 
+    public function show(Request $request)
+    {   
+        $select = DB::table('eletrodomesticos as el')
+            ->join('marcas as m', 'm.id', 'el.marca_id')
+            ->select('el.id', 'el.nome', 'm.nome as marca', 'el.tensao', 'el.descricao');
+        if(!empty($request['nome']))
+            $select->where('el.nome','=',$request['nome']);
+        if(!empty($request['marca']))
+            $select->where('m.id','=',$request['marca']);
+        if(!empty($request['tensao']))
+            $select->where('el.tensao','=',$request['tensao']);
+        
+        $dados = $select->get();
+        
+        if(!$dados) 
         {
             return response()->json(['error' => 'Nada encontrado.']);
         } 
         else 
         {
-            return response()->json($data);
+            return response()->json($dados);
         }
     }
 

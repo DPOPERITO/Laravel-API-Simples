@@ -11,7 +11,7 @@ class EletroMarcaApiController extends Controller
    
     public function index()
     {
-        if($data = marca::select('id','nome')->get()) 
+        if(!$data = marca::select('id','nome')->get()) 
         {
             return response()->json(['alert' => 'Nada encontrado.']);
         }
